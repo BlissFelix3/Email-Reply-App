@@ -32,21 +32,26 @@ export class EmailReplyComponent implements OnInit {
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get("id");
     if (id) {
-      this.emailService.getEmail(id).subscribe((email) => {
-        this.email = email;
-      });
+      this.emailService.getEmail(id).subscribe(
+        (email) => {
+          this.email = email;
+        },
+        (error) => {
+          console.error("Error fetching email:", error);
+        }
+      );
     }
   }
 
   sendReply(): void {
     if (this.email) {
-      const username = this.authService.currentUserValue; // Get the username
+      const username = this.authService.currentUserValue;
       if (username) {
         this.emailService
           .replyToEmail(this.email.id, this.reply, username)
           .subscribe(() => {
-            alert("Reply sent"); // Alert the user that the reply was sent
-            this.router.navigate(["emails"]); // Navigate back to the email list
+            alert("Reply sent");
+            this.router.navigate(["emails"]);
           });
       }
     }

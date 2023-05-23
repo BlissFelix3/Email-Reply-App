@@ -10,6 +10,9 @@ export class EmailService {
   private baseUrl = "http://localhost:3000/emails";
 
   constructor(private http: HttpClient) {}
+  getAccessToken() {
+    return localStorage.getItem("accessToken");
+  }
 
   createEmail(email: Partial<Email>, username: string): Observable<Email> {
     const body = { ...email, username };
@@ -17,10 +20,6 @@ export class EmailService {
       Authorization: `Bearer ${this.getAccessToken()}`,
     });
     return this.http.post<Email>(`${this.baseUrl}/create`, body, { headers });
-  }
-
-  getAccessToken() {
-    return localStorage.getItem("accessToken");
   }
 
   getEmails(): Observable<Email[]> {
@@ -32,11 +31,19 @@ export class EmailService {
 
   getEmail(id: string): Observable<Email> {
     const url = `${this.baseUrl}/${id}`;
-    return this.http.get<Email>(url);
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.getAccessToken()}`,
+    });
+    return this.http.get<Email>(url, { headers });
   }
 
   replyToEmail(id: string, reply: string, username: string): Observable<void> {
     const body = { reply, username };
-    return this.http.post<void>(`${this.baseUrl}/${id}/reply`, body);
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.getAccessToken()}`,
+    });
+    return this.http.post<void>(`${this.baseUrl}/${id}/reply`, body, {
+      headers,
+    });
   }
 }
