@@ -1,0 +1,47 @@
+version: "3"
+services:
+  web:
+    build:
+      context: ./frontend
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "4200:80"
+    depends_on:
+      - api
+  api:
+    build:
+      context: ./backend
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - AWS_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=secret
+      - DATABASE_NAME=email_reply_app
+    depends_on:
+      - db
+      - localstack
+  db:
+    image: postgres:latest
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: email_reply_app
+  localstack:
+    image: localstack/localstack
+    environment:
+      - SERVICES=s3,ses
+    ports:
+      - "4572:4572"
+      - "4579:4579"
+volumes:
+  db_data:
