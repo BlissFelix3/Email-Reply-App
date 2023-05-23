@@ -1,23 +1,26 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Email } from './email.interface';
+import { Injectable } from "@angular/core";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Observable } from "rxjs";
+import { Email } from "./email.interface";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class EmailService {
-  private baseUrl = 'http://localhost:3000/emails';
+  private baseUrl = "http://localhost:3000/emails";
 
   constructor(private http: HttpClient) {}
 
   createEmail(email: Partial<Email>, username: string): Observable<Email> {
     const body = { ...email, username };
-    return this.http.post<Email>(`${this.baseUrl}/create`, body);
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.getAccessToken()}`,
+    });
+    return this.http.post<Email>(`${this.baseUrl}/create`, body, { headers });
   }
 
   getAccessToken() {
-    return localStorage.getItem('accessToken'); // Assuming you're storing the token in local storage
+    return localStorage.getItem("accessToken");
   }
 
   getEmails(): Observable<Email[]> {

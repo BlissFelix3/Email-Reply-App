@@ -1,3 +1,13 @@
+<div class="flex justify-between items-center">
+  <h1 class="text-2xl font-bold text-indigo-600 mb-4">Emails</h1>
+  <button
+    class="px-6 py-2 rounded bg-indigo-600 text-white hover:bg-indigo-500"
+    [routerLink]="['/emails/create']"
+  >
+    Compose Email
+  </button>
+</div>
+
 <div *ngIf="emails.length > 0; else noEmails">
   <div
     *ngFor="let email of emails"
