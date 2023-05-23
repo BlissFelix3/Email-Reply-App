@@ -1,32 +1,36 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { EmailService } from '../email.service';
-import { Email } from '../email.interface';
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { EmailService } from "../email.service";
+import { Email } from "../email.interface";
+import { AuthService } from "src/app/auth/auth.service";
+import { Router } from "@angular/router";
 
 @Component({
-  selector: 'app-email-reply',
-  templateUrl: './email-reply.component.html',
-  styleUrls: ['./email-reply.component.scss'],
+  selector: "app-email-reply",
+  templateUrl: "./email-reply.component.html",
+  styleUrls: ["./email-reply.component.scss"],
 })
 export class EmailReplyComponent implements OnInit {
   email: Email = {
-    id: '',
-    from: '',
-    to: '',
-    subject: '',
-    body: '',
-    timestamp: '',
+    id: "",
+    from: "",
+    to: "",
+    subject: "",
+    body: "",
+    timestamp: "",
     replies: [],
   };
-  reply = '';
+  reply = "";
 
   constructor(
     private route: ActivatedRoute,
-    private emailService: EmailService
+    private emailService: EmailService,
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id');
+    const id = this.route.snapshot.paramMap.get("id");
     if (id) {
       this.emailService.getEmail(id).subscribe((email) => {
         this.email = email;
@@ -34,26 +38,17 @@ export class EmailReplyComponent implements OnInit {
     }
   }
 
-  sendReply() {
-    const user = localStorage.getItem('username');
-    if (!user) {
-      alert('Please sign up or log in before replying');
-      // redirect to signup or login page
-      return;
-    }
+  sendReply(): void {
     if (this.email) {
-      this.emailService
-        .replyToEmail(this.email.id, this.reply, user)
-        .subscribe({
-          next: () => {
-            alert('Reply sent!');
-            this.reply = '';
-          },
-          error: (error) => {
-            console.log('Reply send failed');
-            alert(error.error.message); // Display error message
-          },
-        });
+      const username = this.authService.currentUserValue; // Get the username
+      if (username) {
+        this.emailService
+          .replyToEmail(this.email.id, this.reply, username)
+          .subscribe(() => {
+            alert("Reply sent"); // Alert the user that the reply was sent
+            this.router.navigate(["emails"]); // Navigate back to the email list
+          });
+      }
     }
   }
 }
