@@ -73,7 +73,7 @@ export class EmailService {
     username: string,
     emailId: string,
     body: string,
-  ): Promise<void> {
+  ): Promise<{ message: string }> {
     const user = await this.userRepository.findOne({ where: { username } });
     const email = await this.emailRepository.findOne({
       where: { id: emailId },
@@ -86,6 +86,7 @@ export class EmailService {
       reply.email = email;
 
       await this.replyRepository.save(reply);
+      return { message: 'Reply has been sent.' };
     } else {
       throw new HttpException('Email not found', HttpStatus.NOT_FOUND);
     }

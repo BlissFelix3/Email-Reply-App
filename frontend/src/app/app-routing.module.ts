@@ -12,7 +12,7 @@ const routes: Routes = [
   { path: 'emails', component: EmailComponent },
   { path: 'emails/create', component: EmailCreateComponent },
   { path: 'emails/:id', component: EmailReplyComponent },
-  { path: '', redirectTo: 'emails', pathMatch: 'full' },
+  { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
 ];
 
 @NgModule({

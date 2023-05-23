@@ -10,6 +10,4 @@ export interface AuthResponseSignup {
 export interface AuthResponseLogin {
   accessToken: string;
   username: string;
-  // id: string;
-  // email: string;
 }

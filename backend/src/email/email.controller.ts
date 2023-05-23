@@ -38,11 +38,16 @@ export class EmailController {
 
   @UseGuards(JwtAuthGuard)
   @Post(':id/reply')
-  replyEmail(
+  async replyEmail(
     @Request() req,
     @Param('id') id: string,
     @Body('reply') reply: string,
   ) {
-    return this.emailService.replyEmail(req.user.username, id, reply);
+    const result = await this.emailService.replyEmail(
+      req.user.username,
+      id,
+      reply,
+    );
+    return result;
   }
 }
