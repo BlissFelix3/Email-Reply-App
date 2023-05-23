@@ -1,0 +1,30 @@
+<div *ngIf="emails.length > 0; else noEmails">
+  <div
+    *ngFor="let email of emails"
+    class="p-4 bg-white rounded-lg shadow-md my-2"
+  >
+    <h2 class="text-xl font-bold">{{ email.subject }}</h2>
+    <p><strong>From:</strong> {{ email.from }}</p>
+    <p><strong>To:</strong> {{ email.to }}</p>
+    <p>{{ email.body }}</p>
+    <a
+      [routerLink]="['/emails', email.id]"
+      class="text-indigo-600 hover:text-indigo-500"
+      >Reply</a
+    >
+    <div *ngFor="let reply of email.replies">
+      <h3>Reply:</h3>
+      <p>{{ reply.reply }}</p>
+      <p><strong>Replied by (User ID):</strong> {{ reply.replyUserId }}</p>
+    </div>
+  </div>
+</div>
+
+<ng-template #noEmails>
+  <div
+    class="flex flex-col items-center justify-center p-6 bg-white rounded-lg shadow-md"
+  >
+    <h2 class="text-2xl font-bold text-indigo-600 mb-4">No emails</h2>
+    <p class="text-gray-600">You haven't received any emails yet.</p>
+  </div>
+</ng-template>

@@ -1,0 +1,35 @@
+<div class="flex flex-col max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
+  <h2 class="text-2xl font-bold text-indigo-600 mb-4">Compose Email</h2>
+  <form (ngSubmit)="sendEmail()" class="space-y-4">
+    <input
+      [(ngModel)]="email.to"
+      name="to"
+      class="border border-gray-300 p-2 w-full"
+      placeholder="To"
+      required
+    />
+    <input
+      [(ngModel)]="email.from"
+      name="from"
+      class="border border-gray-300 p-2 w-full"
+      placeholder="From"
+      required
+    />
+    <input
+      [(ngModel)]="email.subject"
+      name="subject"
+      class="border border-gray-300 p-2 w-full"
+      placeholder="Subject"
+      required
+    />
+    <textarea
+      [(ngModel)]="email.body"
+      name="body"
+      class="border border-gray-300 p-2 w-full"
+      placeholder="Body"
+      required
+      rows="4"
+    ></textarea>
+    <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-500">Send</button>
+  </form>
+</div>
