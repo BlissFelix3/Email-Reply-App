@@ -49,9 +49,22 @@ export class EmailReplyComponent implements OnInit {
       if (username) {
         this.emailService
           .replyToEmail(this.email.id, this.reply, username)
-          .subscribe(() => {
-            alert("Reply sent");
-            this.router.navigate(["emails"]);
+          .subscribe({
+            next: () => {
+              alert("Reply sent");
+              this.router.navigate(["emails"]);
+            },
+            error: (error) => {
+              if (
+                error.status === 400 &&
+                error.error.message ===
+                  "You have already replied to this email."
+              ) {
+                alert("You have already replied to this email.");
+              } else {
+                console.error("Error sending reply:", error);
+              }
+            },
           });
       }
     }

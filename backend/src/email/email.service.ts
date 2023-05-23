@@ -10,11 +10,10 @@ import { EmailEntity } from 'src/common/entities/email.entity';
 import { UserEntity } from 'src/common/entities/user.entity';
 import { ReplyEntity } from 'src/common/entities/reply.entity';
 import { CreateEmailDto } from './dto/create-email.dto';
-import { SES } from 'aws-sdk';
+// import { SesService } from './AWS/ses.service';
 
 @Injectable()
 export class EmailService {
-  private ses: SES;
   constructor(
     @InjectRepository(EmailEntity)
     private emailRepository: Repository<EmailEntity>,
@@ -22,15 +21,8 @@ export class EmailService {
     private userRepository: Repository<UserEntity>,
     @InjectRepository(ReplyEntity)
     private readonly replyRepository: Repository<ReplyEntity>,
-  ) {
-    // this.ses = new SES({
-    //   apiVersion: '2010-12-01',
-    //   endpoint: 'http://localstack:4579',
-    //   region: 'us-east-1',
-    //   accessKeyId: 'test',
-    //   secretAccessKey: 'test',
-    // });
-  }
+    // private sesService: SesService,
+  ) {}
 
   async createEmail(
     username: string,
@@ -51,6 +43,12 @@ export class EmailService {
     const newEmail = this.emailRepository.create({ ...emailDto, user: user });
 
     await this.emailRepository.save(newEmail);
+
+    // await this.sesService.sendEmail(
+    //   emailDto.to,
+    //   emailDto.subject,
+    //   emailDto.body,
+    // );
 
     return newEmail;
   }
@@ -80,6 +78,17 @@ export class EmailService {
     });
 
     if (email) {
+      const existingReply = await this.replyRepository.findOne({
+        where: { email: { id: email.id }, user: { id: user.id } },
+      });
+
+      if (existingReply) {
+        throw new HttpException(
+          'You have already replied to this email.',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
       const reply = new ReplyEntity();
       reply.body = body;
       reply.user = user;
