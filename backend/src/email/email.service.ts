@@ -10,7 +10,7 @@ import { EmailEntity } from 'src/common/entities/email.entity';
 import { UserEntity } from 'src/common/entities/user.entity';
 import { ReplyEntity } from 'src/common/entities/reply.entity';
 import { CreateEmailDto } from './dto/create-email.dto';
-// import { SesService } from './AWS/ses.service';
+import { SesService } from './AWS/ses.service';
 
 @Injectable()
 export class EmailService {
@@ -21,7 +21,7 @@ export class EmailService {
     private userRepository: Repository<UserEntity>,
     @InjectRepository(ReplyEntity)
     private readonly replyRepository: Repository<ReplyEntity>,
-    // private sesService: SesService,
+    private sesService: SesService,
   ) {}
 
   async createEmail(
@@ -44,11 +44,11 @@ export class EmailService {
 
     await this.emailRepository.save(newEmail);
 
-    // await this.sesService.sendEmail(
-    //   emailDto.to,
-    //   emailDto.subject,
-    //   emailDto.body,
-    // );
+    await this.sesService.sendEmail(
+      emailDto.to,
+      emailDto.subject,
+      emailDto.body,
+    );
 
     return newEmail;
   }
