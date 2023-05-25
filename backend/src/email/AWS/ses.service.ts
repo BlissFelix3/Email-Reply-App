@@ -10,7 +10,9 @@ export class SesService {
       accessKeyId: process.env.AWS_ACCESS_KEY_ID,
       secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
       region: process.env.AWS_REGION,
-      endpoint: new AWS.Endpoint('http://localhost:4566'),
+      endpoint: process.env.LOCALSTACK_HOSTNAME
+        ? `http://${process.env.LOCALSTACK_HOSTNAME}:4566`
+        : undefined,
     });
   }
 

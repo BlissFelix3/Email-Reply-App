@@ -23,18 +23,34 @@ Email Reply Application
 - Node.js and npm (Node Package Manager)
 - Angular CLI: Install it by running `npm install -g @angular/cli`.
 - PostgreSQL: Follow this guide to install and setup PostgreSQL: [PostgreSQL Tutorial](https://www.postgresqltutorial.com/install-postgresql/)
+- Docker: Follow this guide to install Docker:[Docker Installation Guide](https://docs.docker.com/get-docker/)
 
 ### Installing and Running the Application
 
 #### Main
 
 1. Clone this repository
+    `git clone https://github.com/the-repo-url.git`
+
+2. Navigate into project directory:
+    `cd repo-name`
+
+#### LocalStack and AWS SES Setup
+1. Rename `.docker.env` and `.example.env` provided to `.env`and input your your set values
+
+2. Run LocalStack using docker-compose. A docker-compose.yml file is provided in the repository.
+ 
+3. Run `docker-compose up --build` to connect to the database using docker and build the localstack to mock the AWS SES Service.
+
+4. Make sure to run your installed docker to run the docker engine in the background.
+
+5. Run the `https://localhost:3000/email/test` to test that the SES(via LocalStack) is running 
 
 #### Backend
 
 1. Run `npm install` to install all required dependencies.
 2. Make sure PostgreSQL is running.
-3. Update the `ormconfig.json` file with your PostgreSQL credentials.
+3. Update the `.env` file with your PostgreSQL credentials.
 4. Run `npm run start:dev` to start the local development server.
 
 #### Frontend

@@ -18,14 +18,15 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - AWS_REGION=us-east-1
-      - AWS_ACCESS_KEY_ID=test
-      - AWS_SECRET_ACCESS_KEY=test
-      - DATABASE_HOST=db
-      - DATABASE_PORT=5432
-      - DATABASE_USER=postgres
-      - DATABASE_PASSWORD=secret
-      - DATABASE_NAME=email_reply_app
+      - AWS_REGION=$AWS_REGION
+      - AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+      - DATABASE_HOST=$DB_HOST
+      - DATABASE_PORT=$DB_PORT
+      - DATABASE_USER=$DB_USERNAME
+      - DATABASE_PASSWORD=$DB_PASSWORD
+      - DATABASE_NAME=$DB_NAME
+      - LOCALSTACK_HOSTNAME=localstack
     depends_on:
       - db
       - localstack
@@ -33,9 +34,20 @@ services:
     image: postgres:latest
     volumes:
       - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
     environment:
-      POSTGRES_PASSWORD: secret
-      POSTGRES_DB: email_reply_app
+      - POSTGRES_PASSWORD=$DB_PASSWORD
+      - POSTGRES_DB=$DB_NAME
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@pgadmin.org
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
   localstack:
     image: localstack/localstack
     environment:
